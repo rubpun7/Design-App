@@ -146,13 +146,24 @@
         redrawAll();
     }
 
-    function addPreset(name, url) {
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.onload = () => addLayer(img, name);
-        img.onerror = () => alert("Could not load image. Please check CORS or link.");
-        img.src = url;
-    }
+function addPreset(name, url) {
+    const img = new Image();
+    
+    // 1. ต้องกำหนดค่า Anonymous ก่อนการใส่ src เสมอ
+    img.crossOrigin = "Anonymous"; 
+    
+    img.onload = function() {
+        // 2. เมื่อโหลดเสร็จแล้วค่อยเพิ่มเข้าเลเยอร์
+        addLayer(img, name);
+    };
+
+    img.onerror = function() {
+        alert("Error: Cannot load image from this link. Please check your internet or URL.");
+    };
+
+    // 3. ใส่ Timestamp ต่อท้าย URL เพื่อป้องกัน Browser จำ Cache เก่าที่ไม่มีสิทธิ์ CORS
+    img.src = url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+}
 
     document.getElementById('imageLoader').addEventListener('change', (e) => {
         const reader = new FileReader();
@@ -212,3 +223,4 @@
 </script>
 </body>
 </html>
+
