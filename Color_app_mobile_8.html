@@ -60,7 +60,9 @@
             
             <div class="preset-section">
                 <strong>Templates & Links</strong><br>
-                <a href="https://drive.google.com/drive/folders/1EEUX7noYVzoCrgRxHgtoZC-Lcpb27cvE?usp=drive_link" target="_blank" class="preset-btn">Picture Folder</a>
+                <button class="preset-btn" onclick="addPreset('Standard Gown', 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjllDQyA5ZONYVCz8TR64LbhK5AvvawdRafcGGRetnqc7F5XFXP5BLvmp9pke-53MSB-tcfCX2KR4F_S0yrO6-F4px2S3wfCNDvYAxKztn82UdfsFqmmpHm9BMhMRxgtXWbvkuCpO3QwBo24Y7GRTcZiO7BtApNvRSRbY-ZnOi51mpK7Xg8gaMkTY9WpziC/s0/%E0%B8%A1%E0%B8%B2%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%90%E0%B8%B2%E0%B8%99%20%E0%B9%84%E0%B8%A3%E0%B9%89%E0%B9%81%E0%B8%96%E0%B8%9A%E0%B9%81%E0%B8%82%E0%B8%99.png')">Add Gown Image</button>
+                
+                <a href="#" target="_blank" class="preset-btn">Edit Red Stripe</a>
                 <a href="#" target="_blank" class="preset-btn">Edit Logo</a>
             </div>
         </div>
@@ -119,9 +121,9 @@
             item.innerHTML = `
                 <span>${layer.name}</span>
                 <div class="layer-controls">
-                    <button onclick="moveLayer(${realIndex}, 1)">↑</button>
-                    <button onclick="moveLayer(${realIndex}, -1)">↓</button>
-                    <button style="color:red" onclick="removeLayer(${realIndex})">✖</button>
+                    <button onclick="moveLayer(${realIndex}, 1)">Up</button>
+                    <button onclick="moveLayer(${realIndex}, -1)">Down</button>
+                    <button style="color:red" onclick="removeLayer(${realIndex})">Del</button>
                 </div>
             `;
             list.appendChild(item);
