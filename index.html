@@ -523,16 +523,16 @@ function addLayer(img, name) {
         
         wm.onload = () => {
             // --- คำนวณขนาดลายน้ำให้สัมพันธ์กับขนาดรูปจริง (Dynamic Scaling) ---
-            // กำหนดให้ลายน้ำกว้าง 25% ของความกว้างรูปภาพ
-            const wmWidth = tempCanvas.width * 0.25; 
+            // กำหนดให้ลายน้ำกว้าง 100% ของความกว้างรูปภาพ
+            const wmWidth = tempCanvas.width * 1; 
             const wmHeight = (wm.height / wm.width) * wmWidth;
             
             // ตั้งค่าความจาง (0.5 คือ 50%)
-            tCtx.globalAlpha = 0.5; 
+            tCtx.globalAlpha = 1; 
             
             // --- คำนวณตำแหน่ง (มุมขวาล่าง) ---
-            // เว้นระยะขอบ 3% ของความกว้างรูป
-            const margin = tempCanvas.width * 0.03; 
+            // เว้นระยะขอบ 0% ของความกว้างรูป
+            const margin = tempCanvas.width * 0; 
             const posX = tempCanvas.width - wmWidth - margin;
             const posY = tempCanvas.height - wmHeight - margin;
             
@@ -685,3 +685,4 @@ function addLayer(img, name) {
 
 </body>
 </html>
+
