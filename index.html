@@ -508,7 +508,6 @@ function addLayer(img, name) {
 
     function saveImage() {
         const tempCanvas = document.createElement('canvas');
-        // ใช้ขนาดจริงของ Canvas หลัก (High Res)
         tempCanvas.width = canvas.width;
         tempCanvas.height = canvas.height;
         const tCtx = tempCanvas.getContext('2d');
@@ -524,17 +523,16 @@ function addLayer(img, name) {
         wm.onload = () => {
             // --- คำนวณขนาดลายน้ำให้สัมพันธ์กับขนาดรูปจริง (Dynamic Scaling) ---
             // กำหนดให้ลายน้ำกว้าง 100% ของความกว้างรูปภาพ
-            const wmWidth = tempCanvas.width * 1; 
-            const wmHeight = (wm.height / wm.width) * wmWidth;
+            const wmWidth = wm.width; 
+            const wmHeight = wm.height;
             
-            // ตั้งค่าความจาง (0.5 คือ 50%)
+            // ตั้งค่าความจาง (เช่น 0.5 คือ 50%)
             tCtx.globalAlpha = 1; 
             
             // --- คำนวณตำแหน่ง (มุมขวาล่าง) ---
             // เว้นระยะขอบ 0% ของความกว้างรูป
-            const margin = tempCanvas.width * 0; 
-            const posX = tempCanvas.width - wmWidth - margin;
-            const posY = tempCanvas.height - wmHeight - margin;
+            const posX = tempCanvas.width - wmWidth - 0;
+            const posY = tempCanvas.height - wmHeight - 0;
             
             tCtx.drawImage(wm, posX, posY, wmWidth, wmHeight);
             
@@ -549,7 +547,7 @@ function addLayer(img, name) {
         };
 
         wm.onerror = () => {
-            alert("ไม่พบไฟล์ลายน้ำในระบบ (Check path: watermark.png) ระบบจะบันทึกภาพปกติให้ครับ");
+            alert("ไม่พบไฟล์ลายน้ำ ระบบจะบันทึกภาพปกติครับ");
             const link = document.createElement('a');
             link.download = (document.getElementById('fileName').value || "Design") + '.png';
             link.href = tempCanvas.toDataURL("image/png");
@@ -685,4 +683,3 @@ function addLayer(img, name) {
 
 </body>
 </html>
-
