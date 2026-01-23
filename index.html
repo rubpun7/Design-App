@@ -176,6 +176,32 @@
     let isMoveMode = false;
     let selectedPaletteIndex = 0;
 
+    // ระบบ Auto-Save และสร้างพื้นหลังเริ่มต้น
+        window.onload = () => {
+            const lastSession = localStorage.getItem('nuchDesign_backup');
+            if(lastSession) {
+                const img = new Image();
+                img.onload = () => {
+                    canvas.width = img.width; 
+                    canvas.height = img.height;
+                    offCanvas.width = img.width; 
+                    offCanvas.height = img.height;
+                    colorCanvas.width = img.width; 
+                    colorCanvas.height = img.height;
+                
+                    ctx.drawImage(img, 0, 0);
+                    offCtx.drawImage(img, 0, 0);
+                
+                    fitCanvasToScreen();
+                    saveHistory();
+                };
+                img.src = lastSession;
+            } else {
+                // กรณีไม่มีงานเก่าค้างอยู่ ให้สร้างพื้นหลังสีขาวขนาด 2481*3508 ทันที
+                createDefaultBackground();
+            }
+        };
+
     // สร้างช่องสี 20 ช่อง
     const paletteGrid = document.getElementById('paletteGrid');
     let paletteColors = JSON.parse(localStorage.getItem('nuchPalette')) || Array(20).fill('#ffffff');
@@ -290,19 +316,40 @@
         } 
     }
     // --- แก้ไข: ใช้ขนาดจริง ไม่มีการย่อ Canvas ---
-    function addLayer(img, name) {
+function addLayer(img, name) {
     if (layers.length === 0) {
         canvas.width = img.width;
         canvas.height = img.height;
-        // ตั้งค่าขนาดแผ่นเก็บสีให้เท่ากับรูปภาพ
         colorCanvas.width = img.width;
         colorCanvas.height = img.height;
-        // เติมพื้นสีขาวเป็นค่าเริ่มต้นในแผ่นเก็บสี
         colorCtx.fillStyle = "white";
         colorCtx.fillRect(0, 0, colorCanvas.width, colorCanvas.height);
+        
+        // เพิ่มบรรทัดนี้เพื่อให้เห็นภาพรวมหลังสร้างพื้นหลังเสร็จ
+        setTimeout(fitCanvasToScreen, 100);
     }
-    layers.push({ name: name, img: img });
+    // เพิ่ม visible: true เข้าไปด้วย
+    layers.push({ name: name, img: img, visible: true });
     redrawAllLayers();
+}
+
+    // ฟังก์ชันสำหรับสร้าง Layer พื้นหลังสีขาวขนาดมาตรฐาน
+    function createDefaultBackground() {
+        const bgCanvas = document.createElement('canvas');
+        bgCanvas.width = 2481;
+        bgCanvas.height = 3508;
+        const bgCtx = bgCanvas.getContext('2d');
+    
+        // เติมสีขาวลงในพื้นที่ทั้งหมด
+        bgCtx.fillStyle = "white";
+        bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+        // แปลงเป็นรูปภาพเพื่อส่งเข้าสู่ระบบ Layer
+        const img = new Image();
+        img.onload = () => {
+        addLayer(img, "พื้นหลังสีขาว");
+        };
+        img.src = bgCanvas.toDataURL();
 }
 
     function redrawAllLayers() {
