@@ -64,6 +64,96 @@
         .preset-btn { background: #eee; border: 1px solid #ccc; padding: 8px; margin: 4px 0; width: 100%; text-align: left; border-radius: 4px; font-size: 12px; }
 
         #refImagePreview { max-width: 100%; height: auto; margin-top: 10px; border: 1px solid #ddd; display: block; }
+
+        /* Floating Action Button (FAB) */
+        .fab-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+        }
+
+        .fab-main {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #3498db;
+            color: white;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+
+        .fab-container.active .fab-main { 
+            transform: rotate(45deg); background: #e74c3c; 
+        }
+
+        .fab-menu {
+            display: none;
+            flex-direction: column-reverse;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .fab-container.active .fab-menu { display: flex; }
+
+        .fab-item {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.2;
+            padding: 5px;
+        }
+
+        .fab-item-paint { 
+            background: #f1c40f; color: #333; 
+        }
+
+        .fab-item-palette { 
+            background: #9b59b6; 
+        }
+
+        /* สีเหลืองสำหรับปุ่ม Undo ใน FAB */
+        .fab-item-undo { 
+            background: #f1c40f; color: #333; 
+        }
+
+        /* สีเพิ่มเติมสำหรับปุ่มใน FAB */
+        .fab-item-layer { 
+        background: #3498db; 
+        }
+
+        .fab-item-template { 
+        background: #3498db; 
+        }
+
+        .fab-item-save { 
+        background: #27ae60; 
+        }
+
+        .fab-item-reset { 
+        background: #e74c3c; 
+        }
+
     </style>
 </head>
 <body>
@@ -149,10 +239,6 @@
             <div id="canvasWrapper">
                 <canvas id="canvas"></canvas>
             </div>
-        </div>
-
-        <div class="sidebar active" style="flex: 0.5; min-width: 200px;">
-
         </div>
     </div>
 </div>
@@ -523,6 +609,55 @@ function addLayer(img, name) {
         data[i+2] = color.b;
         data[i+3] = 255; // ความทึบ 100%
 }
+
+    // ฟังก์ชัน เปิด-ปิด เมนูปุ่มลอย
+    function toggleFAB() {
+        const fab = document.getElementById('fabContainer');
+        fab.classList.toggle('active');
+    }
+
+    // ปรับปรุงฟังก์ชัน toggleMoveMode เดิมของคุณเพื่อให้ปุ่มลอยอัปเดตชื่อด้วย
+    // ให้หาฟังก์ชัน toggleMoveMode เดิมแล้วเพิ่ม 2 บรรทัดสุดท้ายนี้เข้าไปครับ
+    const originalToggleMoveMode = toggleMoveMode;
+    toggleMoveMode = function() {
+        originalToggleMoveMode(); // เรียกใช้การทำงานเดิม
+        const fabBtn = document.getElementById('fabMoveBtn');
+        // อัปเดตข้อความบนปุ่มลอย
+        if(isMoveMode) {
+            fabBtn.innerText = "👆🔄";
+            fabBtn.style.background = "#e67e22";
+            fabBtn.style.color = "white";
+        } else {
+            fabBtn.innerText = "🖌️🔄";
+            fabBtn.style.background = "#f1c40f";
+            fabBtn.style.color = "#333";
+        }
+    };
+
 </script>
+
+<div class="fab-container" id="fabContainer">
+        <button class="fab-main" onclick="toggleFAB()">+</button>
+        
+        <div class="fab-menu">
+        
+            <button id="fabMoveBtn" class="fab-item fab-item-paint" onclick="toggleMoveMode(); toggleFAB();">🖌️🔄</button>
+            
+            <button class="fab-item fab-item-palette" onclick="toggleSidebar('colors'); toggleFAB();">🎨</button>
+
+            <button class="fab-item fab-item-template" onclick="toggleSidebar('presets'); toggleFAB();">🖼️</button>
+            
+            <button class="fab-item fab-item-layer" onclick="toggleSidebar('layers'); toggleFAB();">📑</button>
+            
+            <button class="fab-item fab-item-undo" onclick="undo(); toggleFAB();">🔙</button>
+
+            <button class="fab-item fab-item-save" onclick="saveImage(); toggleFAB();">✅</button>
+
+            <button class="fab-item fab-item-reset" onclick="resetAll(); toggleFAB();">❌</button>
+            
+
+        </div>
+    </div>
+
 </body>
 </html>
