@@ -532,53 +532,66 @@ function addLayer(img, name) {
     }
 
     function saveImage() {
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = canvas.width;
-        tempCanvas.height = canvas.height;
-        const tCtx = tempCanvas.getContext('2d');
-        
-        // 1. วาดงานออกแบบทั้งหมดลงใน Canvas ชั่วคราว
-        tCtx.drawImage(canvas, 0, 0);
-        
-        // 2. โหลดลายน้ำ
-        const wm = new Image();
-        wm.crossOrigin = "Anonymous";
-        wm.src = watermarkUrl + "?t=" + new Date().getTime();
-        
-        wm.onload = () => {
-            // --- คำนวณขนาดลายน้ำให้สัมพันธ์กับขนาดรูปจริง (Dynamic Scaling) ---
-            // กำหนดให้ลายน้ำกว้าง 100% ของความกว้างรูปภาพ
-            const wmWidth = wm.width; 
-            const wmHeight = wm.height;
-            
-            // ตั้งค่าความจาง (เช่น 0.5 คือ 50%)
-            tCtx.globalAlpha = 1; 
-            
-            // --- คำนวณตำแหน่ง (มุมขวาล่าง) ---
-            // เว้นระยะขอบ 0% ของความกว้างรูป
-            const posX = tempCanvas.width - wmWidth - 0;
-            const posY = tempCanvas.height - wmHeight - 0;
-            
-            tCtx.drawImage(wm, posX, posY, wmWidth, wmHeight);
-            
-            // คืนค่าความโปร่งใสกลับมาเป็นปกติก่อนบันทึก
-            tCtx.globalAlpha = 1.0; 
-            
-            // 3. เริ่มกระบวนการดาวน์โหลด
-            const link = document.createElement('a');
-            link.download = (document.getElementById('fileName').value || "Design") + '.png';
-            link.href = tempCanvas.toDataURL("image/png");
-            link.click();
-        };
+    const fileNameInput = document.getElementById('fileName');
+    const filename = (fileNameInput && fileNameInput.value) ? fileNameInput.value : 'Design';
 
-        wm.onerror = () => {
-            alert("ไม่พบไฟล์ลายน้ำ ระบบจะบันทึกภาพปกติครับ");
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    const tCtx = tempCanvas.getContext('2d');
+
+    tCtx.drawImage(canvas, 0, 0);
+
+    // โหลดลายน้ำ (ถ้าต้องการ)
+    const wm = new Image();
+    wm.crossOrigin = "Anonymous";
+    wm.src = watermarkUrl + "?t=" + Date.now();
+
+    wm.onload = () => {
+        // วาดลายน้ำ (ถาพร้อม)
+        try {
+            const wmWidth = wm.width;
+            const wmHeight = wm.height;
+            const posX = tempCanvas.width - wmWidth;
+            const posY = tempCanvas.height - wmHeight;
+            tCtx.globalAlpha = 1;
+            tCtx.drawImage(wm, posX, posY, wmWidth, wmHeight);
+            tCtx.globalAlpha = 1;
+        } catch (e) {
+            // ถ้าวาดลายน้ำมีปัญหา ให้บันทึกต่อไปโดยไม่ใช้ลายน้ำ
+            console.warn('Watermark draw failed:', e);
+        }
+
+        try {
+            const dataURL = tempCanvas.toDataURL("image/png");
             const link = document.createElement('a');
-            link.download = (document.getElementById('fileName').value || "Design") + '.png';
-            link.href = tempCanvas.toDataURL("image/png");
+            link.download = filename + '.png';
+            link.href = dataURL;
+            document.body.appendChild(link);
             link.click();
-        };
-    }
+            link.remove();
+        } catch (err) {
+            alert('ไม่สามารถบันทึกภาพได้: ' + err.message + '\nสาเหตุที่เป็นไปได้: มีรูปจากแหล่งอื่นทำให้ canvas ถูกจำกัด (CORS).');
+            console.error(err);
+        }
+    };
+
+    wm.onerror = () => {
+        // ถ้าโหลดลายน้ำล้มเหลว ให้บันทึกภาพปกติ (ไม่มีลายน้ำ)
+        try {
+            const dataURL = tempCanvas.toDataURL("image/png");
+            const link = document.createElement('a');
+            link.download = filename + '.png';
+            link.href = dataURL;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (err) {
+            alert('ไม่สามารถบันทึกภาพได้: ' + err.message + '\nสาเหตุที่เป็นไปได้: มีรูปจากแหล่งอื่นทำให้ canvas ถูกจำกัด (CORS).');
+            console.error(err);
+        }
+    };
+}
 
         function centerContent() { 
             const area = document.getElementById('scrollArea'); 
