@@ -178,13 +178,14 @@
             <input type="file" id="refLoader" accept="image/*" style="font-size:10px; width:100%;">
             <img id="refImagePreview" src="" alt="No Reference Loaded" onerror="this.style.display='none'">
             <textarea id="refNote" placeholder="Write notes here..." style="width:100%; height:80px; margin-top:10px; font-size:12px;"></textarea>
-            <div style="margin-top:10px;">
+            <div style="display:flex; align-items:center; gap:10px;">
                 <strong>Zoom:</strong>
-                <input type="range" id="zoomSlider" min="0.1" max="4" step="0.1" value="1" oninput="applyZoom()" style="width:100%;">
-                <input type="text" id="fileName" value="Design" style="width:100%; margin-top:5px; padding:5px;" placeholder="File Name">
+                <button class="btn btn-blue" onclick="changeZoom(-0.1)" style="width:40px; font-size:18px;">-</button>
+                <span id="zoomLevel" style="min-width:50px; text-align:center; font-weight:bold;">100%</span>
+                <button class="btn btn-blue" onclick="changeZoom(0.1)" style="width:40px; font-size:18px;">+</button>
             </div>
         </div>
-
+    
     </div>
 
     <div class="main-layout">
@@ -207,23 +208,24 @@
             </div>
 
             <div id="เสื้อครุย" class="preset-group active">
-                <button class="preset-btn" onclick="addPreset('Original', 'แบบชุดครุย/เสื้อ/Original.png')">มาตราฐาน</button>
-                <button class="preset-btn" onclick="addPreset('Origin +1', 'แบบชุดครุย/เสื้อ/Origin +1.png')">มาตราฐาน +1</button>
-                <button class="preset-btn" onclick="addPreset('Switch BS', 'แบบชุดครุย/เสื้อ/Switch BS.png')">สลับใหญ่เล็ก</button>
-                <button class="preset-btn" onclick="addPreset('2 Lines', 'แบบชุดครุย/เสื้อ/2 Lines.png')">2 แถบเท่า</button>
-                <button class="preset-btn" onclick="addPreset('3 Lines', 'แบบชุดครุย/เสื้อ/3 Lines.png')">3 แถบเท่า</button>
+                <button class="preset-btn" onclick="addPreset('มาตราฐาน', 'แบบชุดครุย/เสื้อ/Original.png')">มาตราฐาน</button>
+                <button class="preset-btn" onclick="addPreset('มาตราฐาน +1', 'แบบชุดครุย/เสื้อ/Origin +1.png')">มาตราฐาน +1</button>
+                <button class="preset-btn" onclick="addPreset('เฉพาะใหญ่', 'แบบชุดครุย/เสื้อ/Big Only.png')">เฉพาะใหญ่</button>
+                <button class="preset-btn" onclick="addPreset('สลับใหญ่เล็ก', 'แบบชุดครุย/เสื้อ/Switch BS.png')">สลับใหญ่เล็ก</button>
+                <button class="preset-btn" onclick="addPreset('2 แถบเท่า', 'แบบชุดครุย/เสื้อ/2 Lines.png')">2 แถบเท่า</button>
+                <button class="preset-btn" onclick="addPreset('3 แถบเท่า', 'แบบชุดครุย/เสื้อ/3 Lines.png')">3 แถบเท่า</button>
             </div>
             <div id="แขน" class="preset-group">
-                <button class="preset-btn" onclick="addPreset('Chevron 1', 'แบบชุดครุย/เสื้อ/Chevrons/Chevron 1.png')">แถบแขน 1</button>
-                <button class="preset-btn" onclick="addPreset('Chevron 2', 'แบบชุดครุย/เสื้อ/Chevrons/Chevron 2.png')">แถบแขน 2</button>
-                <button class="preset-btn" onclick="addPreset('Chevron 3', 'แบบชุดครุย/เสื้อ/Chevrons/Chevron 3.png')">แถบแขน 3</button>
+                <button class="preset-btn" onclick="addPreset('แถบแขน 1', 'แบบชุดครุย/เสื้อ/Chevrons/Chevron 1.png')">แถบแขน 1</button>
+                <button class="preset-btn" onclick="addPreset('แถบแขน 2', 'แบบชุดครุย/เสื้อ/Chevrons/Chevron 2.png')">แถบแขน 2</button>
+                <button class="preset-btn" onclick="addPreset('แถบแขน 3', 'แบบชุดครุย/เสื้อ/Chevrons/Chevron 3.png')">แถบแขน 3</button>
             </div>
             <div id="หมวก" class="preset-group">
-                <button class="preset-btn" onclick="addPreset('Cap', 'แบบชุดครุย/หมวก/Cap.png')">หมวกเปล่า</button>
-                <button class="preset-btn" onclick="addPreset('Hat Piping', 'แบบชุดครุย/หมวก/Hat Piping.png')">แถบผ้าหมวก</button>
-                <button class="preset-btn" onclick="addPreset('Ribbon 1', 'แบบชุดครุย/หมวก/Ribbon 1.png')">ริบบิ้น 1</button>
-                <button class="preset-btn" onclick="addPreset('Ribbon 2', 'แบบชุดครุย/หมวก/Ribbon 2.png')">ริบบิ้น 2</button>
-                <button class="preset-btn" onclick="addPreset('Ribbon 3', 'แบบชุดครุย/หมวก/Ribbon 3.png')">ริบบิ้น 3</button>
+                <button class="preset-btn" onclick="addPreset('หมวกเปล่า', 'แบบชุดครุย/หมวก/Cap.png')">หมวกเปล่า</button>
+                <button class="preset-btn" onclick="addPreset('แถบผ้าหมวก', 'แบบชุดครุย/หมวก/Hat Piping.png')">แถบผ้าหมวก</button>
+                <button class="preset-btn" onclick="addPreset('ริบบิ้น 1', 'แบบชุดครุย/หมวก/Ribbon 1.png')">ริบบิ้น 1</button>
+                <button class="preset-btn" onclick="addPreset('ริบบิ้น 2', 'แบบชุดครุย/หมวก/Ribbon 2.png')">ริบบิ้น 2</button>
+                <button class="preset-btn" onclick="addPreset('ริบบิ้น 3', 'แบบชุดครุย/หมวก/Ribbon 3.png')">ริบบิ้น 3</button>
             </div>
         </div>
 
@@ -259,6 +261,7 @@
     let layers = []; 
     let history = [];
     let currentZoom = 1;
+    let minZoom = 0.1; // ตัวแปรเก็บค่าซูมต่ำสุดที่จะถูกคำนวณใหม่เมื่อโหลดภาพ
     let isMoveMode = false;
     let selectedPaletteIndex = 0;
 
@@ -365,19 +368,41 @@
         reader.readAsDataURL(e.target.files[0]);
     });
 
+    // ปรับปรุงฟังก์ชัน fitCanvasToScreen เพื่อให้กำหนดค่าเริ่มต้นให้ปุ่ม
     function fitCanvasToScreen() {
-        const area = document.getElementById('scrollArea');
-        const baseScale = Math.min((area.clientWidth-40)/canvas.width, (area.clientHeight-40)/canvas.height);
-        document.getElementById('zoomSlider').value = baseScale > 1 ? 1 : baseScale;
+        if (canvas.width === 0) return;
+        const scrollArea = document.getElementById('scrollArea');
+        const maxWidth = scrollArea.clientWidth - 40;
+        const maxHeight = scrollArea.clientHeight - 40;
+
+        const scaleX = maxWidth / canvas.width;
+        const scaleY = maxHeight / canvas.height;
+        
+        minZoom = Math.min(scaleX, scaleY); // กำหนดค่าซูมที่พอดีจอเป็นค่าต่ำสุด
+        if (minZoom > 1) minZoom = 1;
+
+        currentZoom = minZoom; // เริ่มต้นที่ขนาดพอดีจอ
         applyZoom();
     }
 
+    // ฟังก์ชันใหม่สำหรับการเปลี่ยนระดับการซูมทีละขั้น
+    function changeZoom(delta) {
+        // คำนวณค่าซูมใหม่ โดยจำกัดให้อยู่ระหว่าง minZoom ถึง 4 เท่า
+        currentZoom = Math.min(Math.max(currentZoom + delta, minZoom), 4);
+        applyZoom();
+    }
+    
+    // ปรับปรุงฟังก์ชัน applyZoom เดิมให้แสดงเปอร์เซ็นต์ด้วย
     function applyZoom() {
-        currentZoom = parseFloat(document.getElementById('zoomSlider').value);
         const wrapper = document.getElementById('canvasWrapper');
+        if (!wrapper) return;
+        
         wrapper.style.width = (canvas.width * currentZoom) + 'px';
         wrapper.style.height = (canvas.height * currentZoom) + 'px';
         canvas.style.transform = `scale(${currentZoom})`;
+        
+        // อัปเดตตัวเลขเปอร์เซ็นต์บนหน้าจอ
+        document.getElementById('zoomLevel').innerText = Math.round(currentZoom * 100) + '%';
     }
 
     function saveHistory() {
@@ -683,3 +708,4 @@ function addLayer(img, name) {
 
 </body>
 </html>
+
