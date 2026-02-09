@@ -178,11 +178,11 @@
             <input type="file" id="refLoader" accept="image/*" style="font-size:10px; width:100%;">
             <img id="refImagePreview" src="" alt="No Reference Loaded" onerror="this.style.display='none'">
             <textarea id="refNote" placeholder="Write notes here..." style="width:100%; height:80px; margin-top:10px; font-size:12px;"></textarea>
-            <div style="display:flex; align-items:center; gap:10px; background: #f9f9f9; padding: 5px 10px; border-radius: 8px;">
+            <div style="display:flex; align-items:center; gap:10px;">
                 <strong>Zoom:</strong>
-                <button class="btn btn-blue" onclick="changeZoom(-0.1)" style="width:35px; height:35px; font-size:20px; display:flex; align-items:center; justify-content:center;">-</button>
-                <span id="zoomLevel" style="min-width:60px; text-align:center; font-weight:bold; color: #2c3e50;">100%</span>
-                <button class="btn btn-blue" onclick="changeZoom(0.1)" style="width:35px; height:35px; font-size:20px; display:flex; align-items:center; justify-content:center;">+</button>
+                <button class="btn btn-blue" onclick="changeZoom(-0.1)" style="width:40px; font-size:18px;">-</button>
+                <span id="zoomLevel" style="min-width:50px; text-align:center; font-weight:bold;">100%</span>
+                <button class="btn btn-blue" onclick="changeZoom(0.1)" style="width:40px; font-size:18px;">+</button>
             </div>
         </div>
     
@@ -264,12 +264,6 @@
     let minZoom = 0.1; // ตัวแปรเก็บค่าซูมต่ำสุดที่จะถูกคำนวณใหม่เมื่อโหลดภาพ
     let isMoveMode = false;
     let selectedPaletteIndex = 0;
-
-    let minZoom = 0.1;               // ค่าซูมต่ำสุด (จะถูกคำนวณใหม่ให้พอดีจอ)
-    let initialPinchDistance = null; // ระยะห่างระหว่าง 2 นิ้วตอนเริ่มแตะ
-    let initialZoomForPinch = 1;     // ค่าซูมก่อนที่จะเริ่มขยับนิ้ว
-    let lastTouchMidPoint = { x: 0, y: 0 }; // จุดกึ่งกลางระหว่าง 2 นิ้ว
-    
 
     // ระบบ Auto-Save และสร้างพื้นหลังเริ่มต้น
         window.onload = () => {
@@ -604,81 +598,8 @@ function addLayer(img, name) {
             area.scrollLeft = (area.scrollWidth - area.clientWidth)/2; 
             area.scrollTop = (area.scrollHeight - area.clientHeight)/2; 
             }
-
-    
     canvas.addEventListener('mousedown', e => handleAction(e));
-
-    
-    // ฟังก์ชันช่วย: คำนวณระยะห่างระหว่าง 2 จุด
-    function getDistance(t1, t2) {
-        return Math.sqrt(Math.pow(t2.clientX - t1.clientX, 2) + Math.pow(t2.clientY - t1.clientY, 2));
-    }
-
-    // ฟังก์ชันช่วย: หาจุดกึ่งกลางระหว่าง 2 จุด
-    function getMidpoint(t1, t2) {
-        return { x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2 };
-    }
-
-    // แก้ไขระบบสัมผัส
-    canvas.addEventListener('touchstart', e => {
-        if (e.touches.length === 2) {
-            // เมื่อใช้ 2 นิ้ว: เริ่มโหมดซูม/เลื่อน
-            initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
-            initialZoomForPinch = currentZoom;
-            lastTouchMidPoint = getMidpoint(e.touches[0], e.touches[1]);
-            e.preventDefault();
-        } else if (e.touches.length === 1 && !isMoveMode) {
-            // เมื่อใช้ 1 นิ้ว: ลงสีปกติ
-            handleAction(e.touches[0]);
-            e.preventDefault();
-        }
-    }, { passive: false });
-
-
-    
-
-    canvas.addEventListener('touchmove', e => {
-        if (e.touches.length === 2) {
-            // 1. ระบบ Pinch to Zoom
-            const currentDist = getDistance(e.touches[0], e.touches[1]);
-            const scale = currentDist / initialPinchDistance;
-            currentZoom = Math.min(Math.max(initialZoomForPinch * scale, minZoom), 4);
-            applyZoom();
-
-            // 2. ระบบเลื่อนภาพ (Two-finger Panning)
-            const currentMidPoint = getMidpoint(e.touches[0], e.touches[1]);
-            const deltaX = currentMidPoint.x - lastTouchMidPoint.x;
-            const deltaY = currentMidPoint.y - lastTouchMidPoint.y;
-            
-            const area = document.getElementById('scrollArea');
-            area.scrollLeft -= deltaX;
-            area.scrollTop -= deltaY;
-            
-            lastTouchMidPoint = currentMidPoint;
-            e.preventDefault();
-        }
-    }, { passive: false });
-
-    // ฟังก์ชันกดปุ่ม +/-
-    function changeZoom(delta) {
-        currentZoom = Math.min(Math.max(currentZoom + delta, minZoom), 4);
-        applyZoom();
-    }
-
-    // ฟังก์ชันอัปเดตการแสดงผล (ใช้ร่วมกันทั้งปุ่มและนิ้ว)
-    function applyZoom() {
-        const wrapper = document.getElementById('canvasWrapper');
-        wrapper.style.width = (canvas.width * currentZoom) + 'px';
-        wrapper.style.height = (canvas.height * currentZoom) + 'px';
-        canvas.style.transform = `scale(${currentZoom})`;
-        
-        // อัปเดตตัวเลขเปอร์เซ็นต์
-        const zoomDisplay = document.getElementById('zoomLevel');
-        if(zoomDisplay) zoomDisplay.innerText = Math.round(currentZoom * 100) + '%';
-    }
-
-
-    
+    canvas.addEventListener('touchstart', e => { if(!isMoveMode) { handleAction(e.touches[0]); e.preventDefault(); } });
 
     // --- แก้ไข: คำนวณพิกเซลโดยหารด้วยค่า Zoom ---
     function handleAction(e) {
@@ -800,5 +721,3 @@ function addLayer(img, name) {
 
 </body>
 </html>
-
-
